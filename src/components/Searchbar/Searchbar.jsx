@@ -1,6 +1,5 @@
 import React from 'react';
 import css from './Searchbar.module.css';
-import { Notify } from 'notiflix';
 
 export default function Searchbar({ onSubmit }) {
   return (
