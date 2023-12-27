@@ -1,7 +1,16 @@
 import React from 'react';
 import css from './Searchbar.module.css';
+import { Notify } from 'notiflix';
 
 export default function Searchbar({ onSubmit }) {
+  const handleSubmit = e => {
+    const inputValue = e.currentTarget.elements.query.value;
+    if (inputValue === '') {
+      Notify.failure('Please type something!');
+      return;
+      onSubmit(inputValue);
+    }
+  };
   return (
     <header className={css.Searchbar}>
       <form className={css.SearchForm} onSubmit={onSubmit}>

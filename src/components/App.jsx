@@ -25,6 +25,9 @@ export default class App extends Component {
       firstState.filter !== this.state.filter ||
       firstState.page !== this.state.page
     ) {
+      this.setState({
+        isLoading: true,
+      });
       try {
         const response = await getGallery(this.state.filter, this.state.page);
         if (response.length === 0) {
@@ -32,7 +35,6 @@ export default class App extends Component {
         }
         this.setState(prevState => ({
           pictures: [...prevState.pictures, ...response],
-          isLoading: false,
         }));
       } catch (error) {
         this.setState({
@@ -46,19 +48,9 @@ export default class App extends Component {
     }
   }
 
-  handleSubmit = async e => {
-    if (e) {
-      e.preventDefault();
-    }
-    const inputValue = e.currentTarget.elements.query.value;
-    if (inputValue === '') {
-      Notify.failure('Please type something!');
-      this.setState({ isLoading: false });
-      return;
-    }
+  handleSubmit = async inputValue => {
     if (inputValue !== this.state.filter) {
       this.setState({
-        isLoading: true,
         pictures: [],
         filter: inputValue,
         page: 1,
@@ -77,11 +69,6 @@ export default class App extends Component {
     this.setState(({ showModal }) => ({
       showModal: !showModal,
     }));
-    if (!this.state.showModal) {
-      document.body.classList.add('no-scroll');
-    } else {
-      document.body.classList.remove('no-scroll');
-    }
   };
 
   render() {
