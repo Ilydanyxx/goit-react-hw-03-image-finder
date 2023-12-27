@@ -20,10 +20,10 @@ export default class App extends Component {
     showModal: false,
   };
 
-  async componentDidUpdate(_, firstState) {
+  async componentDidUpdate(_, prevState) {
     if (
-      firstState.filter !== this.state.filter ||
-      firstState.page !== this.state.page
+      prevState.filter !== this.state.filter ||
+      prevState.page !== this.state.page
     ) {
       this.setState({
         isLoading: true,
@@ -48,9 +48,19 @@ export default class App extends Component {
     }
   }
 
-  handleSubmit = async inputValue => {
+  handleSubmit = async e => {
+    if (e) {
+      e.preventDefault();
+    }
+    const inputValue = e.currentTarget.elements.query.value;
+    if (inputValue === '') {
+      Notify.failure('Please type something!');
+ 
+      return;
+    }
     if (inputValue !== this.state.filter) {
       this.setState({
+
         pictures: [],
         filter: inputValue,
         page: 1,
