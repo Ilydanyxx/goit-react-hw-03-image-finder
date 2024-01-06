@@ -16,7 +16,7 @@ export default class App extends Component {
     filter: '',
     pictures: [],
     page: 1,
-    pictureId: null,
+    modalData: null,
     showModal: false,
   };
 
@@ -72,17 +72,21 @@ export default class App extends Component {
     this.setState(prevState => ({ page: prevState.page + 1, isLoading: true }));
   };
 
-  toggleModal = id => {
-    this.setState({
-      pictureId: id,
-    });
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
-    }));
+  toggleModal = (id) => {
+    const foundPicture = this.state.pictures.find((picture) => picture.id === id);
+    if (foundPicture) {
+      this.setState(({ showModal }) => ({
+        showModal: !showModal,
+        modalData: {
+          pictureLink: foundPicture.largeImageURL,
+          pictureAlt: foundPicture.tags,
+        },
+      }));
+    }
   };
 
   render() {
-    const { pictures, isLoading, showModal, pictureId } = this.state;
+    const { pictures, isLoading, showModal, modalData } = this.state;
 
     return (
       <div
@@ -109,10 +113,8 @@ export default class App extends Component {
         )}
         {showModal && (
           <Modal
-            pictures={pictures}
-            id={pictureId}
+            modalData={modalData}
             onClose={this.toggleModal}
-            showModal={this.state.showModal}
           />
         )}
       </div>

@@ -4,27 +4,21 @@ import css from './Modal.module.css';
 const modalRoot = document.querySelector('#modal-root');
 
 export default class Modal extends Component {
-  state = {
-    pictureLink: null,
-    pictureAlt: '',
-  };
+
 
   componentDidMount() {
-    const { pictures, id } = this.props;
-    const foundPicture = pictures.find(picture => picture.id === id);
-    if (foundPicture) {
-      this.setState({
-        pictureLink: foundPicture.largeImageURL,
-        pictureAlt: foundPicture.tags,
-      });
-    }
-
     window.addEventListener('keydown', this.handleKeyDown);
   }
 
   componentWillUnmount() {
     window.removeEventListener('keydown', this.handleKeyDown);
   }
+
+  handleKeyDown = e => {
+    if (e.code === 'Escape') {
+      this.props.onClose();
+    }
+  };
 
   handleModalClick = e => {
     const backdrop = document.querySelector('#backdrop');
@@ -33,13 +27,12 @@ export default class Modal extends Component {
     }
   };
 
-  handleKeyDown = e => {
-    if (e.code === 'Escape') {
-      this.props.onClose();
-    }
-  };
 
   render() {
+    const {
+      pictureLink,
+      pictureAlt
+    } = this.props.modalData;
     return createPortal(
       <div
         id="backdrop"
@@ -47,8 +40,8 @@ export default class Modal extends Component {
         onClick={this.handleModalClick}
       >
         <div id="modal" className={css.modal}>
-          {this.state.pictureLink && (
-            <img src={this.state.pictureLink} alt={this.state.pictureAlt} />
+          {pictureLink && (
+            <img src={pictureLink} alt={pictureAlt} />
           )}
         </div>
       </div>,
