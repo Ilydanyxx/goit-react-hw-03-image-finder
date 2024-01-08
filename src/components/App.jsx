@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, useState } from 'react';
 import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
 import getGallery from 'api/api';
@@ -17,7 +17,6 @@ export default class App extends Component {
     pictures: [],
     page: 1,
     modalData: null,
-    showModal: false,
   };
 
   async componentDidUpdate(_, prevState) {
@@ -75,18 +74,19 @@ export default class App extends Component {
   toggleModal = (id) => {
     const foundPicture = this.state.pictures.find((picture) => picture.id === id);
     if (foundPicture) {
-      this.setState(({ showModal }) => ({
-        showModal: !showModal,
+      this.setState({
         modalData: {
           pictureLink: foundPicture.largeImageURL,
           pictureAlt: foundPicture.tags,
         },
-      }));
+      });
     }
   };
-
+  closeModal = () => {
+    this.setState({ modalData: null });
+  };
   render() {
-    const { pictures, isLoading, showModal, modalData } = this.state;
+    const { pictures, isLoading, modalData } = this.state;
 
     return (
       <div
@@ -111,10 +111,10 @@ export default class App extends Component {
         {pictures.length >= PER_PAGE && pictures.length % PER_PAGE === 0 && (
           <Button onClick={this.addMorePages} />
         )}
-        {showModal && (
+        {modalData && (
           <Modal
             modalData={modalData}
-            onClose={this.toggleModal}
+            onClose={this.closeModal}
           />
         )}
       </div>
